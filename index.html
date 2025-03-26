@@ -3,10 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Birthday Time Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom right, #cce4f6, #e8f2fc);
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #b8e1fc, #d9f3ff);
       margin: 0;
       padding: 20px;
       display: flex;
@@ -15,50 +20,76 @@
     }
 
     h1 {
-      margin-bottom: 20px;
+      font-size: 32px;
       color: #222;
+      margin-bottom: 20px;
     }
 
     .calculator-card {
       background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.1);
       padding: 20px;
-      margin: 10px;
-      width: 320px;
+      margin: 15px;
+      width: 360px;
       position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .calculator-card:hover {
+      transform: scale(1.01);
     }
 
     .calculator-card h2 {
       margin-top: 0;
+      margin-bottom: 10px;
+      color: #007acc;
     }
 
     .dropdowns {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     select {
-      padding: 6px;
+      padding: 8px;
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 14px;
+      flex: 1;
+      margin-right: 8px;
+      background: #f8f9fa;
+    }
+
+    select:last-child {
+      margin-right: 0;
     }
 
     .results p {
-      margin: 4px 0;
+      margin: 6px 0;
+      font-size: 14px;
     }
 
-    button.add-button {
+    .results span {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .add-button {
       margin-top: 20px;
-      padding: 10px 20px;
+      padding: 12px 24px;
       font-size: 16px;
       background: #007bff;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .add-button:hover {
+      background: #0056b3;
     }
 
     .remove-button {
@@ -70,8 +101,13 @@
       border-radius: 50%;
       cursor: pointer;
       font-size: 16px;
-      width: 25px;
-      height: 25px;
+      width: 26px;
+      height: 26px;
+      transition: background 0.2s ease;
+    }
+
+    .remove-button:hover {
+      background: #ffdddd;
     }
   </style>
 </head>
@@ -103,12 +139,12 @@
         <select class="year">${[...Array(2026)].map((_, i) => `<option value="${i}">${i}</option>`).join('')}</select>
       </div>
       <div class="results">
-        <p><strong>Years:</strong> <span class="years">-</span></p>
-        <p><strong>Months:</strong> <span class="months">-</span></p>
-        <p><strong>Days:</strong> <span class="days">-</span></p>
-        <p><strong>Hours:</strong> <span class="hours">-</span></p>
-        <p><strong>Minutes:</strong> <span class="minutes">-</span></p>
-        <p><strong>Seconds:</strong> <span class="seconds">-</span></p>
+        <p>Years: <span class="years">-</span></p>
+        <p>Months: <span class="months">-</span></p>
+        <p>Days: <span class="days">-</span></p>
+        <p>Hours: <span class="hours">-</span></p>
+        <p>Minutes: <span class="minutes">-</span></p>
+        <p>Seconds: <span class="seconds">-</span></p>
       </div>
     `;
 

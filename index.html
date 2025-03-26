@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Time Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #cce4f6, #e8f2fc);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #222;
+    }
+
+    .calculator-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin: 10px;
+      width: 320px;
+      position: relative;
+    }
+
+    .calculator-card h2 {
+      margin-top: 0;
+    }
+
+    .dropdowns {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    select {
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .results p {
+      margin: 4px 0;
+    }
+
+    button.add-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .remove-button {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: #eee;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      width: 25px;
+      height: 25px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Birthday Time Calculator</h1>
+<div id="container"></div>
+<button class="add-button" onclick="addBirthdayCard()">+ Add Another Birthday</button>
+
+<script>
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  let cardCount = 0;
+
+  function addBirthdayCard() {
+    if (cardCount >= 10) return;
+
+    const card = document.createElement('div');
+    card.className = 'calculator-card';
+    card.innerHTML = `
+      <button class="remove-button" onclick="this.parentElement.remove(); cardCount--; updateIDs()">×</button>
+      <h2>Birthday #${cardCount + 1}</h2>
+      <div class="dropdowns">
+        <select class="month">${monthNames.map((m, i) => `<option value="${i}">${m}</option>`).join('')}</select>
+        <select class="day">${[...Array(31)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join('')}</select>
+        <select class="year">${[...Array(2026)].map((_, i) => `<option value="${i}">${i}</option>`).join('')}</select>
+      </div>
+      <div class="results">
+        <p><strong>Years:</strong> <span class="years">-</span></p>
+        <p><strong>Months:</strong> <span class="months">-</span></p>
+        <p><strong>Days:</strong> <span class="days">-</span></p>
+        <p><strong>Hours:</strong> <span class="hours">-</span></p>
+        <p><strong>Minutes:</strong> <span class="minutes">-</span></p>
+        <p><strong>Seconds:</strong> <span class="seconds">-</span></p>
+      </div>
+    `;
+
+    document.getElementById('container').appendChild(card);
+    cardCount++;
+    setupCardListeners(card);
+  }
+
+  function updateIDs() {
+    const cards = document.querySelectorAll('.calculator-card');
+    cards.forEach((card, index) => {
+      card.querySelector('h2').textContent = `Birthday #${index + 1}`;
+    });
+  }
+
+  function setupCardListeners(card) {
+    const monthSelect = card.querySelector('.month');
+    const daySelect = card.querySelector('.day');
+    const yearSelect = card.querySelector('.year');
+
+    [monthSelect, daySelect, yearSelect].forEach(select => {
+      select.addEventListener('change', () => calculateTime(card));
+    });
+
+    calculateTime(card); // Initial run
+  }
+
+  function calculateTime(card) {
+    const month = parseInt(card.querySelector('.month').value);
+    const day = parseInt(card.querySelector('.day').value);
+    const year = parseInt(card.querySelector('.year').value);
+
+    const birthday = new Date(year, month, day);
+    const now = new Date();
+
+    let diffMs = now - birthday;
+    if (diffMs < 0) {
+      card.querySelectorAll('.results span').forEach(span => span.textContent = '—');
+      return;
+    }
+
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffYears = now.getFullYear() - birthday.getFullYear() - (
+      (now.getMonth() < month || (now.getMonth() === month && now.getDate() < day)) ? 1 : 0
+    );
+
+    const diffMonths = diffYears * 12 + (now.getMonth() - month + (now.getDate() < day ? -1 : 0));
+    const diffHours = diffDays * 24;
+    const diffMinutes = diffHours * 60;
+    const diffSeconds = diffMinutes * 60;
+
+    card.querySelector('.years').textContent = diffYears;
+    card.querySelector('.months').textContent = diffMonths;
+    card.querySelector('.days').textContent = diffDays;
+    card.querySelector('.hours').textContent = diffHours.toLocaleString();
+    card.querySelector('.minutes').textContent = diffMinutes.toLocaleString();
+    card.querySelector('.seconds').textContent = diffSeconds.toLocaleString();
+  }
+
+  // Start with one birthday card
+  addBirthdayCard();
+</script>
+
+</body>
+</html>
